@@ -1,0 +1,16 @@
+server:
+  port: 80
+spring:
+  application:
+    name: module
+  datasource:
+    url: jdbc:mysql://localhost:3306/module-management-service
+    username: root
+    password: Deepak25*
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
