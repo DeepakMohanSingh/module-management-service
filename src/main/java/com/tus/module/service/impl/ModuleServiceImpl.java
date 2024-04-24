@@ -54,4 +54,5 @@ public class ModuleServiceImpl implements IModuleService {
 		moduleRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
 		moduleRepository.deleteById(id);
 	}
+
 }
