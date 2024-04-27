@@ -21,7 +21,7 @@ import com.tus.module.repository.ModuleRepository;
 import com.tus.module.entity.Module;
 import com.tus.module.exception.NotFoundException;
 
-public class ModuleServiceImplTests {
+public class ModuleServiceImplTest {
 
 	@Mock
 	private ModuleRepository moduleRepository;

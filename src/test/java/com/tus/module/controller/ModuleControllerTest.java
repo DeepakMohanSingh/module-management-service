@@ -36,7 +36,7 @@ import com.tus.module.exception.NotFoundException;
 import com.tus.module.service.IModuleService;
 
 @WebMvcTest(ModuleController.class)
-public class ModuleControllerTests {
+public class ModuleControllerTest {
 
 	@MockBean
 	private IModuleService moduleService;
