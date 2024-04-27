@@ -1,9 +1,9 @@
 package com.tus.module.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class ResponseDto<T> {
 	private T data;

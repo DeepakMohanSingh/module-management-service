@@ -46,7 +46,7 @@ public class ModuleController {
 		ModuleDto savedModuleDto = moduleService.addModule(moduleDto);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Location", webRequest.getDescription(false).substring(4) + "/" + savedModuleDto.getId());
-		return new ResponseEntity<>(new ResponseDto<>(savedModuleDto, null), HttpStatus.CREATED);
+		return new ResponseEntity<>(new ResponseDto<>(savedModuleDto, null), headers, HttpStatus.CREATED);
 	}
 
 	@PutMapping("{id}")
@@ -55,7 +55,7 @@ public class ModuleController {
 		ModuleDto savedModuleDto = moduleService.updateModule(id, moduleDto);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Location", webRequest.getDescription(false).substring(4));
-		return new ResponseEntity<>(new ResponseDto<>(savedModuleDto, null), HttpStatus.CREATED);
+		return new ResponseEntity<>(new ResponseDto<>(savedModuleDto, null), headers, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("{id}")
