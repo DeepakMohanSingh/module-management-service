@@ -33,13 +33,14 @@ public class ModuleServiceImplTests {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 	}
+	
+	private String moduleName = "CI/CD";
+	private String moduleDescription = "Learn the continous integration and deployment of applications";
 
 	@Test
 	void getModulesTest() {
-		List<Module> sampleModules = List.of(
-				new Module(1L, "CI/CD", "Learn the continous integration and deployment of applications"),
-				new Module(1L, "Microservices Architecture",
-						"Learn the microservices architecture with Spring Boot app development"));
+		List<Module> sampleModules = List.of(new Module(1L, moduleName, moduleDescription), new Module(1L,
+				"Microservices Architecture", "Learn the microservices architecture with Spring Boot app development"));
 
 		when(moduleRepository.findAll()).thenReturn(sampleModules);
 
@@ -52,7 +53,7 @@ public class ModuleServiceImplTests {
 	@Test
 	void getModuleByIdTest() {
 		Long idToSearch = 1L;
-		Module sampleModule = new Module(idToSearch, "CI/CD", "Learn the continous integration and deployment of applications");
+		Module sampleModule = new Module(idToSearch, moduleName, moduleDescription);
 		
 		when(moduleRepository.findById(idToSearch)).thenReturn(Optional.of(sampleModule));
 
@@ -63,7 +64,7 @@ public class ModuleServiceImplTests {
 	}
 	
 	@Test
-	void getModuleById_NotFound_Test() {
+	void getModuleByIdNotFoundTest() {
 		Long idToSearch = 1L;
 		
 		when(moduleRepository.findById(idToSearch)).thenReturn(Optional.empty());
@@ -75,8 +76,8 @@ public class ModuleServiceImplTests {
 	
 	@Test
 	void addModuleTest() {
-		ModuleDto sampleModuleDto = new ModuleDto(null, "CI/CD", "Learn the continous integration and deployment of applications");
-		Module sampleModule = new Module(1L, "CI/CD", "Learn the continous integration and deployment of applications");
+		ModuleDto sampleModuleDto = new ModuleDto(null, moduleName, moduleDescription);
+		Module sampleModule = new Module(1L, moduleName, moduleDescription);
 		
 		when(moduleRepository.save(any())).thenReturn(sampleModule);
 
@@ -89,8 +90,8 @@ public class ModuleServiceImplTests {
 	@Test
 	void updateModuleTest() {
 		Long idToUpdate = 1L;
-		ModuleDto sampleModuleDto = new ModuleDto(null, "CI/CD", "Learn the continous integration and deployment of applications");
-		Module sampleModule = new Module(idToUpdate, "CI/CD", "Learn the continous integration and deployment of applications");
+		ModuleDto sampleModuleDto = new ModuleDto(null, moduleName, moduleDescription);
+		Module sampleModule = new Module(idToUpdate, moduleName, moduleDescription);
 		
 		when(moduleRepository.findById(idToUpdate)).thenReturn(Optional.of(sampleModule));
 		when(moduleRepository.save(any())).thenReturn(sampleModule);
@@ -103,7 +104,7 @@ public class ModuleServiceImplTests {
 	}
 	
 	@Test
-	void updateModule_NotFound_Test() {
+	void updateModuleNotFoundTest() {
 		Long idToSearch = 100L;
 		when(moduleRepository.findById(idToSearch)).thenReturn(Optional.empty());
 
@@ -115,7 +116,7 @@ public class ModuleServiceImplTests {
 	@Test
 	void deleteModuleTest() {
 		Long idToDelete = 1L;
-		Module sampleModule = new Module(idToDelete, "CI/CD", "Learn the continous integration and deployment of applications");
+		Module sampleModule = new Module(idToDelete, moduleName, moduleDescription);
 		
 		when(moduleRepository.findById(idToDelete)).thenReturn(Optional.of(sampleModule));
 
@@ -126,11 +127,11 @@ public class ModuleServiceImplTests {
 	}
 	
 	@Test
-	void deleteModule_NotFound_Test(){
+	void deleteModuleNotFoundTest(){
 		Long idToSearch = 100L;
 		when(moduleRepository.findById(idToSearch)).thenReturn(Optional.empty());
 
-		NotFoundException exception = assertThrows(NotFoundException.class, () -> moduleService.getModuleById(idToSearch));
+		NotFoundException exception = assertThrows(NotFoundException.class, () -> moduleService.deleteModule(idToSearch));
 		assertEquals(String.format(ModuleConstants.MODULE_NOT_FOUND, idToSearch), exception.getMessage());
 	}
 }

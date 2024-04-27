@@ -54,57 +54,59 @@ public class ModuleControllerTests {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 	}
+	
+	private String path = "/api/modules";
+	private String dataPath = "$.data";
+	private String moduleName = "CI/CD";
+	private String moduleDescription = "Learn the CI and CD of applications";
 
 	@Test
 	void getModulesTest() throws Exception {
-		List<ModuleDto> sampleModules = List.of(
-				new ModuleDto(1L, "CI/CD", "Learn the continous integration and deployment of applications"),
-				new ModuleDto(1L, "Microservices Architecture",
-						"Learn the microservices architecture with Spring Boot app development"));
+		List<ModuleDto> sampleModules = List.of(new ModuleDto(1L, moduleName, moduleDescription), new ModuleDto(1L,
+				"Microservices Architecture", "Learn the microservices architecture with Spring Boot app development"));
 
 		when(moduleService.getModules()).thenReturn(sampleModules);
 		
-		mockMvc.perform(get("/api/modules"))
+		mockMvc.perform(get(path))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.data.length()").value(2));
+				.andExpect(jsonPath(dataPath + ".length()").value(2));
 		verify(moduleService).getModules();
 	}
 
 	@Test
 	void getModuleByIdTest() throws Exception {
-		ModuleDto sampleModule = new ModuleDto(1L, "CI/CD",
-				"Learn the continous integration and deployment of applications");
+		ModuleDto sampleModule = new ModuleDto(1L, moduleName, moduleDescription);
 
 		when(moduleService.getModuleById(1L)).thenReturn(sampleModule);
 		
-		mockMvc.perform(get("/api/modules/1"))
+		mockMvc.perform(get(path + "/1"))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.data").exists())
-				.andExpect(jsonPath("$.data.id").value(sampleModule.getId()));
+				.andExpect(jsonPath(dataPath).exists())
+				.andExpect(jsonPath(dataPath + ".id").value(sampleModule.getId()));
 		verify(moduleService).getModuleById(1L);
 	}
 	
 	@Test
-	void getModuleById_NotFound_Test() throws Exception {
+	void getModuleByIdNotFoundTest() throws Exception {
 		Long idToSearch = 1L;
 		when(moduleService.getModuleById(idToSearch)).thenThrow(new NotFoundException(idToSearch));
 		
-		mockMvc.perform(get("/api/modules/1"))
+		mockMvc.perform(get(path + "/1"))
 				.andDo(print())
 				.andExpect(status().isNotFound());
 		verify(moduleService).getModuleById(idToSearch);
 	}
 	
 	@Test
-	void getModuleById_RuntimeException_Test() throws Exception {
+	void getModuleByIdRuntimeException_Test() throws Exception {
 		Long idToSearch = 1L;
 		when(moduleService.getModuleById(idToSearch)).thenThrow(new RuntimeException("Test runtime exception"));
 		
-		mockMvc.perform(get("/api/modules/1"))
+		mockMvc.perform(get(path + "/1"))
 				.andDo(print())
 				.andExpect(status().isInternalServerError());
 		verify(moduleService).getModuleById(idToSearch);
@@ -112,21 +114,20 @@ public class ModuleControllerTests {
 
 	@Test
 	void addModuleTest() throws Exception {
-		ModuleDto sampleModule = new ModuleDto(1L, "CI/CD",
-				"Learn the CI and CD of applications");
+		ModuleDto sampleModule = new ModuleDto(1L, moduleName, moduleDescription);
 
 		when(moduleService.addModule(any())).thenReturn(sampleModule);
 		
 		ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 		
-		mockMvc.perform(post("/api/modules")
+		mockMvc.perform(post(path)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(sampleModule)))
 				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.data").exists())
-				.andExpect(jsonPath("$.data.id").value(sampleModule.getId()))
+				.andExpect(jsonPath(dataPath).exists())
+				.andExpect(jsonPath(dataPath + ".id").value(sampleModule.getId()))
 				.andExpect(header().string("Location", "/api/modules/1"))
 				.andReturn();
 		verify(moduleService).addModule(captor.capture());
@@ -135,15 +136,14 @@ public class ModuleControllerTests {
 	}
 	
 	@Test
-	void addModule_InvalidBody_Test() throws Exception {
-		ModuleDto sampleModule = new ModuleDto(1L, "CI",
-				"Learn the CI and CD of applications");
+	void addModuleInvalidBodyTest() throws Exception {
+		ModuleDto sampleModule = new ModuleDto(1L, "CI", moduleDescription);
 
 		when(moduleService.addModule(any())).thenReturn(sampleModule);
 		
 		ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 		
-		mockMvc.perform(post("/api/modules")
+		mockMvc.perform(post(path)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(sampleModule)))
 				.andDo(print())
@@ -152,21 +152,20 @@ public class ModuleControllerTests {
 	
 	@Test
 	void updateModuleTest() throws Exception {
-		ModuleDto sampleModule = new ModuleDto(1L, "CI/CD",
-				"Learn the CI and CD of applications");
+		ModuleDto sampleModule = new ModuleDto(1L, moduleName, moduleDescription);
 
 		when(moduleService.updateModule(anyLong(), any())).thenReturn(sampleModule);
 		
 		ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 		
-		mockMvc.perform(put("/api/modules/1")
+		mockMvc.perform(put(path + "/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(sampleModule)))
 				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.data").exists())
-				.andExpect(jsonPath("$.data.id").value(sampleModule.getId()))
+				.andExpect(jsonPath(dataPath).exists())
+				.andExpect(jsonPath(dataPath + ".id").value(sampleModule.getId()))
 				.andReturn();
 		verify(moduleService).updateModule(anyLong(), captor.capture());
 		
@@ -176,7 +175,7 @@ public class ModuleControllerTests {
 	@Test
 	void deleteModuleByIdTest() throws Exception {
 		
-		mockMvc.perform(delete("/api/modules/1"))
+		mockMvc.perform(delete(path + "/1"))
 				.andDo(print())
 				.andExpect(status().isOk());
 		verify(moduleService).deleteModule(1L);
