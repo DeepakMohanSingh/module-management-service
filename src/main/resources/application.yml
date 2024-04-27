@@ -4,7 +4,7 @@ spring:
   application:
     name: module
   datasource:
-    url: jdbc:mysql://localhost:3306/module-management-service
+    url: jdbc:mysql://mysql-container:3306/module-management-service
     username: root
     password: Deepak25*
   h2:
