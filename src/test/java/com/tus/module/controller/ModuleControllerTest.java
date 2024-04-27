@@ -15,6 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,11 +55,12 @@ public class ModuleControllerTest {
 	ArgumentCaptor<ModuleDto> captor;
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws IOException {
 		MockitoAnnotations.openMocks(this);
+	    path = Files.readAllLines(Paths.get("src/main/resources/config.txt")).get(0);
 	}
 	
-	private String path = "/api/modules";
+	private String path;
 	private String dataPath = "$.data";
 	private String moduleName = "CI/CD";
 	private String moduleDescription = "Learn the CI and CD of applications";
@@ -102,7 +107,7 @@ public class ModuleControllerTest {
 	}
 	
 	@Test
-	void getModuleByIdRuntimeException_Test() throws Exception {
+	void getModuleByIdRuntimeExceptionTest() throws Exception {
 		Long idToSearch = 1L;
 		when(moduleService.getModuleById(idToSearch)).thenThrow(new RuntimeException("Test runtime exception"));
 		
